@@ -16,10 +16,18 @@ def parse_args():
 
 def main():
     args = parse_args()
+    execCommand("rm -f tmp", shell = True)
+    execCommand("rm -f image.png", shell = True)
     for i in range(0, int(args.samples)):
         execCommand("top -p " + str(args.pid) + " -n1 | awk '/ " + str(args.pid) + " /{print $12\"\t\" $10}' >> tmp", shell = True)
     execCommand("gnuplot gplotscript", shell = True)
-    # execCommand("rm tmp", shell = True)
+    lines = tuple(open('./tmp', 'r'))
+    count = 0
+    mysum = 0.0
+    for line in lines:
+        mysum += float(line.split('\t')[1].replace(',','.'))
+        count += 1
+    print "Average CPU load: " + str(float(mysum)/float(count))
 
 if __name__ == "__main__":
     main()
