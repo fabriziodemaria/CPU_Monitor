@@ -28,6 +28,7 @@ def main():
         mysum += float(line.split('\t')[1].replace(',','.'))
         count += 1
     print "Average CPU load: " + str(float(mysum)/float(count))
+    execCommand("eog image.png", shell = True)
 
 if __name__ == "__main__":
     main()
