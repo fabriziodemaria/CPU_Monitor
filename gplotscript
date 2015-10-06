@@ -1,0 +1,20 @@
+
+set terminal png
+set output "image.png"
+set title "TEST"
+set nokey
+
+set xdata time
+set format x ""
+set timefmt x "%M:%S"
+
+set xlabel "Time (s)"
+set ylabel "CPU (%)"
+
+set yrange [0:120];
+
+set grid ytics mytics  # draw lines for each ytics and mytics
+set mytics 2           # set the spacing for the mytics
+set grid               # enable the grid
+
+plot "./tmp" using 1:2 smooth cspline
