@@ -1,6 +1,6 @@
 
 set terminal png
-set output "image.png"
+set output "graph.png"
 set title "TEST"
 set nokey
 
