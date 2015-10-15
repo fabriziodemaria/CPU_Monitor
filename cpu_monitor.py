@@ -6,7 +6,7 @@ def parse_args():
     import itertools
     import sys
 
-    parser = argparse.ArgumentParser(description='Provide graphs for CPU usage of a specific running program')
+    parser = argparse.ArgumentParser(description='Provide graph for CPU usage of a specific running program')
     parser.add_argument('pid', action='store', help='PID to monitor')
     parser.add_argument('samples', action='store', help='Number of samples')
     if len(sys.argv)!=3:
@@ -17,7 +17,7 @@ def parse_args():
 def main():
     args = parse_args()
     execCommand("rm -f tmp", shell = True)
-    execCommand("rm -f image.png", shell = True)
+    execCommand("rm -f graph.png", shell = True)
     for i in range(0, int(args.samples)):
         execCommand("top -p " + str(args.pid) + " -n1 | awk '/ " + str(args.pid) + " /{print $12\"\t\" $10}' >> tmp", shell = True)
     execCommand("gnuplot gplotscript", shell = True)
@@ -28,7 +28,7 @@ def main():
         mysum += float(line.split('\t')[1].replace(',','.'))
         count += 1
     print "Average CPU load: " + str(float(mysum)/float(count))
-    execCommand("eog image.png", shell = True)
+    execCommand("eog graph.png", shell = True)
 
 if __name__ == "__main__":
     main()
