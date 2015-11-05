@@ -1,4 +1,4 @@
-# CPU_Monitor
+# CPU_Monitor tool
 
 Graph generator that is able to monitor the CPU usage of a single process in your Linux machine. Uses gnuplot to print the graph of CPU usage and it provides the average value over the time of script execution.
 
