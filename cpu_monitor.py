@@ -1,5 +1,5 @@
 from subprocess import check_output as execCommand
-
+import time
 
 def parse_args():
 	import argparse
@@ -23,7 +23,7 @@ def main():
 	execCommand("rm -f tmp", shell = True)
 
 	# PID Checking
-	execCommand("top -p " + str(args.pid) + " -n1 | awk '/ " + str(args.pid) + " /{print $12\"\t\" $10}' >> tmp", shell = True)
+	execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/^" + str(args.pid) + "/{print $12\"\t\" $10}' >> tmp", shell = True)
 	if len(tuple(open('./tmp', 'r'))) == 0:
 		execCommand("rm -f tmp", shell = True)
 		print "Error: PID not found"
@@ -31,8 +31,8 @@ def main():
 
 	execCommand("rm -f graph.png", shell = True)
 	for i in range(0, int(args.samples)):
-		execCommand("top -p " + str(args.pid) + " -n1 | awk '/ " + str(args.pid) + " /{print $12\"\t\" $10}' >> tmp", shell = True)
-	execCommand("gnuplot gplotscript", shell = True)
+		execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/^" + str(args.pid) + "/{print \"" + str(i) + " \t\" $9}' >> tmp", shell = True)
+	execCommand("sudo gnuplot gplotscript", shell = True)
 
 	# Check sample size
 	if len(tuple(open('./tmp', 'r'))) < 10:
@@ -46,8 +46,6 @@ def main():
 		mysum += float(line.split('\t')[1].replace(',','.'))
 		count += 1
 	print "Average CPU load: " + str(float(mysum)/float(count))
-	if ((float(mysum)/float(count) > 0)):
-		execCommand("eog graph.png", shell = True)
 
 if __name__ == "__main__":
 	main()
