@@ -1,5 +1,4 @@
 from subprocess import check_output as execCommand
-import time
 
 def parse_args():
 	import argparse
@@ -23,15 +22,16 @@ def main():
 	execCommand("rm -f tmp", shell = True)
 
 	# PID Checking
-	execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/^" + str(args.pid) + "/{print $12\"\t\" $10}' >> tmp", shell = True)
+	execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/" + str(args.pid) + "/{print $12\"\t\" $10}' >> tmp", shell = True)
 	if len(tuple(open('./tmp', 'r'))) == 0:
 		execCommand("rm -f tmp", shell = True)
 		print "Error: PID not found"
 		return
 
 	execCommand("rm -f graph.png", shell = True)
+	print "Start scanning..."
 	for i in range(0, int(args.samples)):
-		execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/^" + str(args.pid) + "/{print \"" + str(i) + " \t\" $9}' >> tmp", shell = True)
+		execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/" + str(args.pid) + "/{print \"" + str(i) + " \t\" $9}' >> tmp", shell = True)
 	execCommand("sudo gnuplot gplotscript", shell = True)
 
 	# Check sample size
