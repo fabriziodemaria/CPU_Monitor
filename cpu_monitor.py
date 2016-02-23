@@ -1,9 +1,9 @@
 from subprocess import check_output as execCommand
+import sys
 
 def parse_args():
 	import argparse
 	import itertools
-	import sys
 
 	parser = argparse.ArgumentParser(description='Provide graph for CPU usage of a specific running program')
 	parser.add_argument('pid', action='store', help='PID to monitor')
@@ -32,6 +32,9 @@ def main():
 	print "Start scanning..."
 	for i in range(0, int(args.samples)):
 		execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/" + str(args.pid) + "/{print \"" + str(i) + " \t\" $9}' >> tmp", shell = True)
+		sys.stdout.write("\rScanning [[ %d%% ]]" % (i*100/int(args.samples)))
+		sys.stdout.flush()
+	print ""
 	execCommand("sudo gnuplot gplotscript", shell = True)
 
 	# Check sample size
