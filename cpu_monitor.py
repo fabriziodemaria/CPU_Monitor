@@ -5,10 +5,10 @@ def parse_args():
 	import argparse
 	import itertools
 
-	parser = argparse.ArgumentParser(description='Provide graph for CPU usage of a specific running program')
+	parser = argparse.ArgumentParser(description='This tool provides a graph and average for CPU usage of a specific running program by providing its PID')
 	parser.add_argument('pid', action='store', help='PID to monitor')
 	parser.add_argument('samples', action='store', help='Number of samples')
-	if len(sys.argv)!=3:
+	if len(sys.argv) != 3:
 		parser.print_help()
 		sys.exit(1)
 	return parser.parse_args()
@@ -29,19 +29,23 @@ def main():
 		return
 
 	execCommand("rm -f graph.png", shell = True)
+
 	print "Start scanning..."
 	for i in range(0, int(args.samples)):
 		execCommand("top -p " + str(args.pid) + " -n1 -b | awk '/" + str(args.pid) + "/{print \"" + str(i) + " \t\" $9}' >> tmp", shell = True)
 		sys.stdout.write("\rScanning [[ %d%% ]]" % (i*100/int(args.samples)))
 		sys.stdout.flush()
 	print ""
+
+	# Generating the graph
 	execCommand("sudo gnuplot gplotscript", shell = True)
 
-	# Check sample size
+	# Check sample size a posteriori
 	if len(tuple(open('./tmp', 'r'))) < 10:
-		print "Error: Not enough samples"
+		print "Error: Not enough samples were generated"
 		return
 
+	# Generating the average value
 	lines = tuple(open('./tmp', 'r'))
 	count = 0
 	mysum = 0.0
